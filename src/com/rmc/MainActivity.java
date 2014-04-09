@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+	//test comment for commit
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)	{
 		
