@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/food"
+          android:icon="@drawable/food"
+          android:title="@string/food"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/video"
+          android:icon="@drawable/camera"
+          android:title="@string/video"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/audio"
+          android:icon="@drawable/dogspeakers"
+          android:title="@string/audio" 
+          android:showAsAction="ifRoom|withText" /> 
+</menu>
+
