@@ -9,7 +9,6 @@ public class Audio extends MainActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Toast.makeText(this, "Audio", Toast.LENGTH_LONG).show(); 
 	}
 
 }

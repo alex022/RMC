@@ -20,19 +20,25 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	//test comment for commit
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)	{
 		
-		int itemId = item.getGroupId();
-		itemId = itemId & 00000011; 
-		Log.e("sdfsdfsdfsdf", Integer.toString(itemId));
+		int itemId = item.getItemId();
 		
 		switch(itemId) {
-		case R.id.food: startActivity(new Intent(this, Food.class)); break;
-		case R.id.video: startActivity(new Intent(this, Video.class)); break;
-		case R.id.audio: startActivity(new Intent(this, Audio.class)); break;
-		default: break; 		
+		case R.id.food: 
+			startActivity(new Intent(this, Food.class));
+			break;
+		case R.id.video: 
+			startActivity(new Intent(this, Video.class)); 
+			break;
+		case R.id.audio: 
+			startActivity(new Intent(this, Audio.class)); 
+			break;	
+		default: 
+			Log.e("onOptionsItemSelected", Integer.toString(itemId)); 
+			break;
 		}
 		
 		return super.onOptionsItemSelected(item);		
