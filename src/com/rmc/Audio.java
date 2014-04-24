@@ -1,7 +1,6 @@
 package com.rmc;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 public class Audio extends MainActivity{
 	
