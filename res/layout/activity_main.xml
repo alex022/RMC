@@ -8,6 +8,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
+    
+    
+  <EditText 
+      android:layout_centerInParent="true"
+      android:layout_width="wrap_content"	
+      android:layout_height="wrap_content"
+      android:hint="Enter IP address"
+      android:textSize="40sp"      
+      android:background="@android:color/white"
+      />
 
   
 

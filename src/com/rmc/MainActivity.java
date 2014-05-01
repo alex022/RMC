@@ -1,18 +1,36 @@
 package com.rmc;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 
 public class MainActivity extends Activity {
+	
+	public static String ipAddress;
+	private EditText ipEntry; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		try {
+			getUrl();
+		} catch (ConnectException e) {
+			
+			e.printStackTrace();
+		} 
 	}
 
 	@Override
@@ -42,6 +60,5 @@ public class MainActivity extends Activity {
 		}
 		
 		return super.onOptionsItemSelected(item);		
-	}
-
+	}		
 }
