@@ -11,12 +11,14 @@
     
     
   <EditText 
+      android:id="@+id/addressField"
       android:layout_centerInParent="true"
       android:layout_width="wrap_content"	
       android:layout_height="wrap_content"
       android:hint="Enter IP address"
       android:textSize="40sp"      
       android:background="@android:color/white"
+      android:inputType="textUri"
       />
 
   
