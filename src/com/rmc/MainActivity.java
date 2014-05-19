@@ -1,9 +1,10 @@
 package com.rmc;
 
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
 
 import android.app.Activity;
@@ -15,27 +16,38 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	
 	private Socket socket;
     private static final int port = 2000;   
-	//public static String ipAddress = "128.111.58.37";
-    public static String ipAddress = "192.168.1.109";
+    public String ipAddress;
+    
+    // "192.168.1.109";
 	EditText et;
+	Button connectButton; 
 	
 	private boolean connected = false;	 
     private Handler handler = new Handler();
-	
-
-	@Override
+    private Activity currentActivity; 
+    
+    Thread cThread;
+    
+    DataInputStream inputStream; 
+    PrintWriter outStream; 
+    
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);		
-		et = (EditText)findViewById(R.id.addressField);
+		setContentView(R.layout.activity_main);	
+		currentActivity = this; 
 		
-		new Thread(new ClientThread()).start();
+		et = (EditText)findViewById(R.id.addressField);
+		connectButton = (Button)findViewById(R.id.connectButton); 
+		connectButton.setOnClickListener(connectListener); 
 	}
 
 	@Override
@@ -70,44 +82,140 @@ public class MainActivity extends Activity {
 		 
         @Override
         public void onClick(View v) {
-        	Log.d("onClick", "in onClick"); 
+        	Log.wtf("onClick", "in onClick");   
+        	
             if (!connected) {
-                ipAddress = et.getText().toString();
-                if (!ipAddress.equals("")) {
-                    Thread cThread = new Thread(new ClientThread());
+                //ipAddress = et.getText().toString();
+            	ipAddress = "192.168.1.109"; 
+                if (!ipAddress.equals("")) {                	
+                	
+                	if(socket != null)
+						try {
+							Log.wtf("onClick", "Closing socket");
+							socket.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} 
+                	
+                    cThread = new Thread(new ClientThread());
                     cThread.start();
+                    Log.wtf("onClick", "thread started"); 
                 }
             }
+            if(connected)
+            	Toast.makeText(currentActivity, "Connected", Toast.LENGTH_SHORT).show();
         }
-    };
+       
+    };    
 	
 	class ClientThread implements Runnable {	 
 		
 		@Override
-		public void run() {
-            try {
-                Log.d("ClientActivity", "C: Connecting...");
-                while(!connected){
-                socket = new Socket(ipAddress, port);
-                connected = true;
-                }
-               // while (connected) {
-                    try {
-                        Log.d("ClientActivity", "C: Sending command.");
-                        PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket
-                                    .getOutputStream())), true);                           
-                            out.println("Hey Server!");
-                            Log.d("ClientActivity", "C: Sent.");
-                    } catch (Exception e) {
-                        Log.e("ClientActivity", "S: Error", e);
-                    }
-                //}
-                socket.close();
-                Log.d("ClientActivity", "C: Closed.");
-            } catch (Exception e) {
-                Log.e("ClientActivity", "C: Error", e);
-                connected = false;
-            }
-        }
+		public void run() {            
+			while(true)
+			{
+				try{
+					socket = new Socket(ipAddress, port);
+					Log.wtf("ClientThread", "Opened socket");
+					break;
+				} catch(Exception e)
+				{
+					Log.wtf("ClientThread", "Failed to open socket", e);
+				}		
+			}              
+                          
+			}
+		
+		}
+	
+	public void write(String output)
+	{
+        ipAddress = "192.168.1.109";
+        
+        cThread = new Thread(new ClientThread());
+        cThread.start();		
+			
+		while(true)
+		{
+			try{
+				outStream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket
+	                    .getOutputStream())), true); 
+				Log.wtf("write", "Initialized outStream");
+				break;
+			} catch(Exception e)
+			{
+				Log.wtf("write", "Failed to initialize outStream");
+			}			
+		}
+			
+		while(true)
+		{
+			try{
+	        outStream.println(output);
+	        Log.wtf("write", "Sent message");
+	        break;
+			} catch(Exception e)
+			  {
+				Log.wtf("write", "Failed to send message");
+			  }		
+		}
+	
+		while(true)
+		{
+			try{
+				socket.close();
+				Log.wtf("Write", "Socket closed");
+				break;
+			} catch (Exception e)
+			{
+				Log.wtf("Write", "Failed to close socket"); 
+			}	
+		}
 	}
-}
+	
+	public void read()
+    {
+		byte[] buffer = new byte[64];
+		String input = ""; 
+		
+		ipAddress = "192.168.1.109";
+		
+		cThread = new Thread(new ClientThread());
+        cThread.start();
+        
+    	while(true)
+		{
+			try{
+				inputStream = new DataInputStream(socket.getInputStream()); 
+				Log.wtf("read", "Initialized inputStream");
+				break;
+			} catch(Exception e)
+			{
+				Log.wtf("write", "Failed to initialize inputStream");
+			}			
+		}        	
+    	
+    	while(true)
+    	{ 
+    		try{
+	    		inputStream.read(buffer);
+	    		Log.wtf("Bytes read", input);
+	    		input = new String(buffer);
+	    	} catch(Exception e)
+    		{
+	    		Log.wtf("write", "Failed to read bytes");
+    		}
+    		if(input == "*exit*")
+    		{
+    			Log.wtf("read()", "Exiting read function");
+    			break;
+    		}
+    		
+    		Toast.makeText(currentActivity, input, Toast.LENGTH_LONG).show(); 
+    	}  	
+        	       	
+       
+    }
+	
+    }
+
