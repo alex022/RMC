@@ -1,9 +1,13 @@
 package com.rmc;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
@@ -18,7 +22,7 @@ import android.widget.LinearLayout;
 public class Audio extends MainActivity{
 	
 	private String fileName = null; 	
-	
+	private Context context = this; 
 	private MediaRecorder audioRecorder = null; 
 	private MediaPlayer audioPlayer = null;
 	private RecordButton recordButton = null;
@@ -37,8 +41,8 @@ public class Audio extends MainActivity{
 		LinearLayout ll = new LinearLayout(this);
 		ll.setBackgroundResource(R.drawable.bones);
         
-		/*recordButton = new RecordButton(this);
-		recordButton.setTextSize(50);		
+		recordButton = new RecordButton(this);
+		//recordButton.setTextSize(30);		
         
         ll.addView(recordButton,
             new LinearLayout.LayoutParams(
@@ -47,7 +51,7 @@ public class Audio extends MainActivity{
                 0));
         
         playButton = new PlayButton(this);
-        playButton.setTextSize(50);  
+        //playButton.setTextSize(50);  
         
         
         ll.addView(playButton,
@@ -55,11 +59,11 @@ public class Audio extends MainActivity{
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 0));
-        */
+        
 		
         sendButton = new Button(this);
         sendButton.setText("Send");
-        sendButton.setTextSize(50);
+        //sendButton.setTextSize(30);
         
         ll.addView(sendButton,
                 new LinearLayout.LayoutParams(
@@ -79,7 +83,51 @@ public class Audio extends MainActivity{
         {
         	public void onClick(View v)
         	{
-        		write("Steven sucks donkey"); 
+        		File file = new File(fileName); 
+        		int size = (int)file.length();
+        		Log.wtf("Size of file is", Long.toString(size) + " bytes"); 
+        		InputStream soundStream = null; 
+        		byte[] data = new byte[size];
+        		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        		int numRead;
+        		
+        		while(true)
+        		{
+	        		try {
+	        			//soundStream = context.getAssets().open(fileName);
+	        			soundStream = new BufferedInputStream(new FileInputStream(file));  
+	        			break;
+					} catch (Exception e) {
+						Log.wtf("write", "Failed to open sound file");
+					}      
+        		}
+        		
+        		while(true)
+        		{
+	        		try {
+	        			while ((numRead = soundStream.read(data, 0, data.length)) != -1) {
+	        				  buffer.write(data, 0, numRead);
+	        				}						
+	        			break; 
+					} catch (IOException e) {
+						Log.wtf("write", "Failed to convert sound file to byte array"); 
+					}
+        		}
+        		
+        		try {
+					buffer.flush();
+				} catch (IOException e) {					
+					Log.wtf("write", "Failed to flush buffer"); 
+				}
+        		
+    		
+				try {
+					soundStream.close();
+				} catch (IOException e) {
+					Log.wtf("write", "Failed to close sound stream"); 
+				} 
+        		
+        		writeFile(buffer.toByteArray(), size); 
             }
         });
         

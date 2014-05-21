@@ -128,7 +128,52 @@ public class MainActivity extends Activity {
 		
 		}
 	
-	public void write(String output)
+	public void writeString(String message)
+	{
+		ipAddress = "192.168.1.109";
+        
+        cThread = new Thread(new ClientThread());
+        cThread.start();	
+		
+        while(true)
+		{
+			try{
+				outStream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket
+	                    .getOutputStream())), true); 
+				Log.wtf("write", "Initialized outStream");
+				break;
+			} catch(Exception e)
+			{
+				//Log.wtf("write", "Failed to initialize outStream");
+			}			
+		}
+        
+        while(true)
+		{
+			try{		
+				outStream.println(message);						
+				Log.wtf("write", "Sent message");
+				break;
+			} catch(Exception e)
+			  {
+				Log.wtf("write", "Failed to send message");
+			  }		
+		}
+        
+        while(true)
+		{
+			try{
+				socket.close();
+				Log.wtf("Write", "Socket closed");
+				break;
+			} catch (Exception e)
+			{
+				Log.wtf("Write", "Failed to close socket"); 
+			}	
+		}
+	}
+	
+	public void writeFile(byte[] output, long size)
 	{
         ipAddress = "192.168.1.109";
         
@@ -144,22 +189,26 @@ public class MainActivity extends Activity {
 				break;
 			} catch(Exception e)
 			{
-				Log.wtf("write", "Failed to initialize outStream");
+				//Log.wtf("write", "Failed to initialize outStream");
 			}			
 		}
 			
 		while(true)
 		{
 			try{
-	        outStream.println(output);
-	        Log.wtf("write", "Sent message");
+			
+			for(int i = 0; i < size; i++)
+			{
+				//outStream.println(output[i]);				
+			}			
+	        Log.wtf("write", "Sent file");
 	        break;
 			} catch(Exception e)
 			  {
-				Log.wtf("write", "Failed to send message");
+				Log.wtf("write", "Failed to send file");
 			  }		
 		}
-	
+		
 		while(true)
 		{
 			try{
@@ -177,13 +226,14 @@ public class MainActivity extends Activity {
     {
 		byte[] buffer = new byte[64];
 		String input = ""; 
+		long currentTime = System.currentTimeMillis(); 
 		
 		ipAddress = "192.168.1.109";
 		
 		cThread = new Thread(new ClientThread());
         cThread.start();
         
-    	while(true)
+    	while((System.currentTimeMillis() - currentTime) < 100000)
 		{
 			try{
 				inputStream = new DataInputStream(socket.getInputStream()); 
@@ -191,31 +241,49 @@ public class MainActivity extends Activity {
 				break;
 			} catch(Exception e)
 			{
-				Log.wtf("write", "Failed to initialize inputStream");
+				Log.wtf("read", "Failed to initialize inputStream");
 			}			
 		}        	
     	
-    	while(true)
+    	currentTime = System.currentTimeMillis();
+    	
+    	while((System.currentTimeMillis() - currentTime) < 10000)
     	{ 
     		try{
-	    		inputStream.read(buffer);
-	    		Log.wtf("Bytes read", input);
-	    		input = new String(buffer);
+	    		buffer[0] = inputStream.readByte();  
+	    		//input = new String(buffer);
+	    		if(buffer[0] != -1)
+	    			break; 
+	    		
 	    	} catch(Exception e)
     		{
-	    		Log.wtf("write", "Failed to read bytes");
+	    		Log.wtf("read", "Failed to read bytes");
     		}
-    		if(input == "*exit*")
+    		if(buffer[0] == '*')
     		{
     			Log.wtf("read()", "Exiting read function");
     			break;
-    		}
-    		
-    		Toast.makeText(currentActivity, input, Toast.LENGTH_LONG).show(); 
+    		}    		
     	}  	
+    	
+    	
+		Log.wtf("Bytes read", input);
+		Toast.makeText(currentActivity, input, Toast.LENGTH_LONG).show(); 
+    	
+    	while(true)
+		{
+			try{
+				socket.close();
+				Log.wtf("Write", "Socket closed");
+				break;
+			} catch (Exception e)
+			{
+				Log.wtf("Write", "Failed to close socket"); 
+			}	
+		}
         	       	
        
-    }
+    	}
 	
     }
 
