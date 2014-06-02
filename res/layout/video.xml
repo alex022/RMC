@@ -9,9 +9,22 @@
         android:id="@+id/capture"	
        	android:layout_width="match_parent"
        	android:layout_height="wrap_content"
+       	android:text="Take photo"
+       	android:textSize="40sp" 
+       	android:textStyle="bold"
+       	android:layout_marginTop="10dp"
+       	android:layout_marginLeft="10dp"
+       	android:layout_marginRight="10dp"
+       />
+    
+    <Button        
+        android:id="@+id/viewPhoto"	
+       	android:layout_width="match_parent"
+       	android:layout_height="wrap_content"
        	android:text="View photo"
        	android:textSize="40sp" 
-       	android:layout_marginTop="10dp"
+       	android:textStyle="bold"
+       	android:layout_marginTop="40dp"
        	android:layout_marginLeft="10dp"
        	android:layout_marginRight="10dp"
        />

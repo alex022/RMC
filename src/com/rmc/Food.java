@@ -9,8 +9,11 @@ import android.widget.Toast;
 
 public class Food extends MainActivity{
 	
+	Thread dispenseThread;
 	Activity currentActivity = this; 
 	Button dispense;
+	Button water;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,23 @@ public class Food extends MainActivity{
 		dispense.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) {	
+				dispenseThread = new Thread(new writeThread("*FOOD*", null, 0, false)); 
+				dispenseThread.start(); 
+				//writeString("*DISPENSE*"); 
 				Toast.makeText(currentActivity, "Dispensing Food", Toast.LENGTH_SHORT).show(); 				
+			}
+		});
+		
+		water = (Button)findViewById(R.id.water); 
+		water.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {	
+				dispenseThread = new Thread(new writeThread("*WATER*", null, 0, false)); 
+				dispenseThread.start(); 
+				//writeString("*DISPENSE*"); 
+				Toast.makeText(currentActivity, "Dispensing Water", Toast.LENGTH_SHORT).show(); 				
 			}
 		});
 		

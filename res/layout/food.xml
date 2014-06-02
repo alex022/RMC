@@ -15,8 +15,21 @@
       android:textSize="40sp"
       android:textStyle="bold"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"  
-      android:background="@android:color/white"       
+      android:layout_height="wrap_content" 
+      android:background="@android:color/holo_blue_dark"       
+     />
+  
+  <Button 
+      android:id="@+id/water"
+      android:text="Dispense Water"
+      android:layout_centerHorizontal="true"
+      android:layout_below="@+id/dispense"
+      android:textSize="40sp"
+      android:textStyle="bold"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"    
+      android:background="@android:color/holo_blue_dark"    
      />
   
   <ImageView 
@@ -24,7 +37,7 @@
       android:layout_width="match_parent"
       android:layout_height="5dp" 
       android:background="@android:color/white"
-      android:layout_below="@+id/dispense"
+      android:layout_below="@+id/water"
       android:layout_marginTop="30dp"      
       />
   
@@ -34,7 +47,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@+id/divide"
       android:layout_centerHorizontal="true"
-      android:background="@android:color/holo_blue_light"
+      android:background="@android:color/holo_blue_dark"
       android:text="Set Schedule"
       android:textSize="30sp"
       android:layout_marginTop="25dp"

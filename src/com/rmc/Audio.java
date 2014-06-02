@@ -21,6 +21,8 @@ import android.widget.LinearLayout;
 
 public class Audio extends MainActivity{
 	
+	Thread audioThread;
+	
 	private String fileName = null; 	
 	private Context context = this; 
 	private MediaRecorder audioRecorder = null; 
@@ -127,7 +129,9 @@ public class Audio extends MainActivity{
 					Log.wtf("write", "Failed to close sound stream"); 
 				} 
         		
-        		writeFile(buffer.toByteArray(), size); 
+				
+				audioThread = new Thread(new writeThread("*AUDIO*", buffer.toByteArray(), size, true));
+				audioThread.start(); 
             }
         });
         
