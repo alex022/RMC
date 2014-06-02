@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
     public String ipAddress = "192.168.1.109";
     
     public byte[] photoData;
-    public Bitmap bitmap; 
+    public static Bitmap bitmap; 
     
     public static boolean pictureReady;
     
@@ -45,7 +45,6 @@ public class MainActivity extends Activity {
     private Handler handler = new Handler();
     public Activity currentActivity;   
      
-    //BufferedReader reader;
     PrintWriter outStream;    
     
     @Override
@@ -219,22 +218,21 @@ public class MainActivity extends Activity {
     			}    			 			    			
     		}
     			    	
-	    	try {	    		
+    		try {	    		
 	    		photoFile = new File(fileName);
-	    		
+
 	    		if (photoFile.exists()) {
 	                photoFile.delete();
 	    		}
-	    		
+
 	    		fos = new FileOutputStream(photoFile.getPath());
 
 	            fos.write(photoData);
 	            fos.close();	            
 	        } catch (Exception e) {
-	        }	    	
+	        }    	
 	    	
-	    	//bitmap = BitmapFactory.decodeFile(fileName);
-	    	bitmap = BitmapFactory.decodeByteArray(photoData, 0, Integer.valueOf(size)); 
+	    	bitmap = BitmapFactory.decodeFile(fileName);	    	
 	    	
 	    	if(bitmap != null)
 	    		Log.wtf("read", "bitmap conversion successful");
@@ -252,8 +250,7 @@ public class MainActivity extends Activity {
 					    reader.close();
 					    fos.close();
 					    outStream.close();
-					}
-					
+					}					
 					
 					Log.wtf("Write", "Socket closed");
 					break;
@@ -319,7 +316,7 @@ public class MainActivity extends Activity {
 					break;
 				} catch(Exception e)
 				{
-					//Log.wtf("write", "Failed to initialize outStream");
+					Log.wtf("write", "Failed to initialize outStream");
 				}	
 				attempts++;
 			}
