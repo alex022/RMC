@@ -286,7 +286,7 @@ public class MainActivity extends Activity {
 			while(attempts < ATTEMPTS)
 			{					
 				try{		
-					outStream.println(message);						
+					outStream.print(message);						
 					Log.wtf("write", "Sent message");
 					break;
 				} catch(Exception e)
