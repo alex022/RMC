@@ -1,12 +1,9 @@
 package com.rmc;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
-import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,23 +15,24 @@ public class Video extends MainActivity{
 		 
 	ImageView picture;
 	Button capture;	
-	Button view;
-	int timer;
+    Button viewPicture;
+    Button panLeft;
+    Button panRight;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.video);
 		currentActivity = this;
-		timer = 0;
-		
-		pictureReady = false;  
+		  
 		capture = (Button)findViewById(R.id.capture); 
-		view = (Button)findViewById(R.id.viewPhoto); 
+		viewPicture = (Button)findViewById(R.id.viewPhoto); 
+		panLeft = (Button)findViewById(R.id.panLeft); 
+		panRight = (Button)findViewById(R.id.panRight);
 		picture = (ImageView)findViewById(R.id.picture);
-		picture.setVisibility(ImageView.INVISIBLE); 
-		
-		//view.setEnabled(false); 
+		picture.setVisibility(ImageView.INVISIBLE);	
+		viewPicture.setEnabled(false); 
+		pictureReady = false; 
 	}
 	
 	@Override
@@ -46,56 +44,57 @@ public class Video extends MainActivity{
 			
 			@Override
 			public void onClick(View v) {				
-					Thread readThread = new Thread(new readThread()); 
-					readThread.start();	
-					
-					Toast.makeText(currentActivity, "Taking picture, please wait...", Toast.LENGTH_LONG).show();
-					
-					view.setEnabled(true);								
+				Thread readThread = new Thread(new readThread()); 
+				readThread.start();	
+				viewPicture.setEnabled(true);
+				Toast.makeText(currentActivity, "Taking picture, please wait...", Toast.LENGTH_LONG).show();								
 			}
 		});
 		
-		view.setOnClickListener(new OnClickListener() {
+		viewPicture.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {							
-				/*if(bitmap != null)
-				{					
-					if(pictureReady)
-						startActivity(new Intent(currentActivity, Picture.class)); 
-					else
-						Toast.makeText(currentActivity, "Please wait for picture acquisition to finish", Toast.LENGTH_SHORT).show();						
-					
-				}
-				else
-					Toast.makeText(currentActivity, "bitmap is null", Toast.LENGTH_SHORT).show(); 						
-				
-				pictureReady = false;*/
-				//Log.wtf("read", "Attempting to view photo"); 
-				//File root = Environment.getExternalStorageDirectory();
-				//String fileName = root + "/images/photoFile.jpg";
-									
-				//BitmapFactory.Options options = new BitmapFactory.Options();
-				//  options.inSampleSize = 2;
-				
-				//bitmap = BitmapFactory.decodeFile(fileName);
-				
-				File photoFile;
-				String fileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-				fileName+= "/photoFile.jpg";
-				
-				bitmap = BitmapFactory.decodeFile(fileName);
-				
-				if(bitmap != null)
+			public void onClick(View v) {				
+				if(pictureReady)
 				{
-					picture.setImageBitmap(bitmap);
-					picture.setVisibility(ImageView.VISIBLE);
+					bitmap = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
+					
+					if(bitmap != null)
+					{	
+						Matrix flipVerticalMatrix = new Matrix();
+						flipVerticalMatrix.setScale(1,-1);
+						flipVerticalMatrix.postTranslate(bitmap.getWidth(),0);
+						
+						bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), flipVerticalMatrix, true);
+					
+						picture.setImageBitmap(bitmap);
+						picture.setVisibility(ImageView.VISIBLE);
+					}
+					else
+						Log.wtf("picture", "bitmap is null");		
 				}
 				else
-					Log.wtf("picture", "bitmap is null");
-				
-				//picture.setVisibility(ImageView.VISIBLE); 
-				//startActivity(new Intent(currentActivity, Picture.class));				
+					Toast.makeText(currentActivity, "Picture still being taken", Toast.LENGTH_LONG).show();
+			}
+		});
+		
+		panLeft.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(currentActivity, "Panning camera left", Toast.LENGTH_SHORT).show();
+				Thread panThread = new Thread(new writeThread("*PANLEFT*", null, 0, null, null)); 
+				panThread.start();	
+			}
+		});
+		
+		panRight.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(currentActivity, "Panning camera right", Toast.LENGTH_SHORT).show();
+				Thread panThread = new Thread(new writeThread("*PANRIGHT*", null, 0, null, null)); 
+				panThread.start();	
 			}
 		});
 	}

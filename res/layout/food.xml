@@ -14,7 +14,8 @@
       android:layout_centerHorizontal="true"
       android:textSize="40sp"
       android:textStyle="bold"
-      android:layout_width="wrap_content"
+      android:padding="5dp"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content" 
       android:background="@android:color/holo_blue_dark"       
      />
@@ -26,30 +27,24 @@
       android:layout_below="@+id/dispense"
       android:textSize="40sp"
       android:textStyle="bold"
-      android:layout_width="wrap_content"
+      android:padding="5dp"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="20dp"    
       android:background="@android:color/holo_blue_dark"    
      />
-  
-  <ImageView 
-      android:id="@+id/divide"
-      android:layout_width="match_parent"
-      android:layout_height="5dp" 
-      android:background="@android:color/white"
-      android:layout_below="@+id/water"
-      android:layout_marginTop="30dp"      
-      />
-  
-  <TextView
+      
+  <Button
       android:id="@+id/schedule"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@+id/divide"
+      android:textStyle="bold"
+      android:layout_below="@+id/water"
       android:layout_centerHorizontal="true"
       android:background="@android:color/holo_blue_dark"
       android:text="Set Schedule"
-      android:textSize="30sp"
+      android:textSize="40sp"
+      android:padding="5dp"
       android:layout_marginTop="25dp"
       />
   
@@ -61,6 +56,7 @@
   	android:layout_centerHorizontal="true"
   	android:inputType="time"    
   	android:textSize="40sp"
+  	android:maxLength="4"
   	android:hint="Enter time"
   	android:background="@android:color/white"
   	android:layout_marginTop="30dp" 	

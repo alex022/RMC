@@ -1,21 +1,16 @@
 package com.rmc;
 	
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.ByteBuffer;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
@@ -32,10 +27,8 @@ public class MainActivity extends Activity {
     
     public byte[] photoData;
     public static Bitmap bitmap; 
-    
-    public static boolean pictureReady;
-    
-    private static final int ATTEMPTS = 10 ;
+        
+    private static final int ATTEMPTS = 5;
     
     // "192.168.1.109";
 	EditText et;
@@ -45,7 +38,8 @@ public class MainActivity extends Activity {
     private Handler handler = new Handler();
     public Activity currentActivity;   
      
-    PrintWriter outStream;    
+    PrintWriter outStream;   
+    public static boolean pictureReady;      
     
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,17 +85,10 @@ public class MainActivity extends Activity {
 		public void run() {
 			
 			String size = "";
-			int numStars = 0;
 			int numBytes = 0;
 			int attempts = 0; 
 			byte[] byteBuffer = new byte[100]; 
-			
-			
-			File photoFile;
-			FileOutputStream fos = null;
-			String fileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-			fileName+= "/photoFile.jpg";
-						
+									
 			InputStream reader = null;
 			
 			while(attempts < ATTEMPTS)
@@ -216,66 +203,40 @@ public class MainActivity extends Activity {
     				Log.wtf("read", "Read " + numBytes + " bytes");
     				break; 
     			}    			 			    			
-    		}
-    			    	
-    		try {	    		
-	    		photoFile = new File(fileName);
-
-	    		if (photoFile.exists()) {
-	                photoFile.delete();
-	    		}
-
-	    		fos = new FileOutputStream(photoFile.getPath());
-
-	            fos.write(photoData);
-	            fos.close();	            
-	        } catch (Exception e) {
-	        }    	
+    		}    			    	
 	    	
-	    	bitmap = BitmapFactory.decodeFile(fileName);	    	
-	    	
-	    	if(bitmap != null)
-	    		Log.wtf("read", "bitmap conversion successful");
-	    	else
-	    		Log.wtf("read", "failed to convert bitmap"); 
-	    	
-	    	pictureReady = true;
-	    	
-	    	while(true)
-			{
-				try{
-					if(socket != null)
-					{
-						socket.close(); 
-					    reader.close();
-					    fos.close();
-					    outStream.close();
-					}					
-					
-					Log.wtf("Write", "Socket closed");
-					break;
-				} catch (Exception e)
+			try{
+				if(socket != null)
 				{
-					Log.wtf("Write", "Failed to close socket"); 
-				}	
-			} 			
+					socket.close(); 
+				    reader.close();
+				    outStream.close();
+				}					
+				
+				Log.wtf("Write", "Socket closed");				
+			} catch (Exception e)
+			{
+				Log.wtf("Write", "Failed to close socket"); 
+			}	
+	    	
+	    	 pictureReady = true; 
 		}
     	
     }
     
     class writeThread implements Runnable	{
 
-    	String message;
+    	String message, time, currentTime;
     	byte[] output;
     	long size;
-    	boolean isAudio;
     	
-    	public writeThread(String message, byte[] output, long size, boolean isAudio)
+    	public writeThread(String message, byte[] output, long size, String time, String currentTime)
     	{
     		this.message = message; 
     		this.output = output;
     		this.size = size; 
-    		this.isAudio = isAudio; 
+    		this.time = time; 
+    		this.currentTime = currentTime; 
     	}
     	
 		@Override
@@ -301,7 +262,6 @@ public class MainActivity extends Activity {
 			if(attempts == ATTEMPTS)
 			{
 				Log.wtf("write", "Connection failed");
-				Toast.makeText(currentActivity, "Failed to connect, please try again", Toast.LENGTH_LONG).show();
 				return; 
 			}
 			
@@ -310,8 +270,8 @@ public class MainActivity extends Activity {
 			while(attempts < ATTEMPTS)
 			{
 				try{
-					outStream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket
-		                    .getOutputStream())), true); 
+					outStream = new PrintWriter(socket
+		                    .getOutputStream(), true); 
 					Log.wtf("write", "Initialized outStream");
 					break;
 				} catch(Exception e)
@@ -337,16 +297,31 @@ public class MainActivity extends Activity {
 				attempts++;				
 			}
 			
+			if(message.equals("*FOOD*") || message.equals("*WATER*") || message.equals("*SCHEDULE*"))
+				try {
+					Thread.sleep(4000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				} 			
+			else if(message.equals("*PANLEFT*") || message.equals("*PANRIGHT*"))
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				} 
+			
 			attempts = 0;
 			
-			if(isAudio)
+			if(message.equals("*AUDIO*"))
 			while(attempts < ATTEMPTS)
 			{			
-				try{						
+				try{			
+					Log.wtf("Size", Long.toString(size)); 
 					for(int i = 0; i < size; i++)
-					{
-						Log.wtf("Sending byte", Byte.toString(output[i])); 
-						outStream.println(output[i]);				
+					{						
+						outStream.println(Byte.toString(output[i]));	
+						if((i % 1000) == 0)
+							Log.wtf("Sent", Integer.toString(i) + "bytes");
 					}			
 			        Log.wtf("write", "Sent file");
 			        break;
@@ -356,6 +331,13 @@ public class MainActivity extends Activity {
 				  }		
 				
 				attempts++;
+			}
+			
+			if(message.equals("*SCHEDULE*"))
+			{
+				Log.wtf("sending", "current time is " + currentTime);
+				Log.wtf("sending", "schedule time is " + time);
+				outStream.println(currentTime + time);				
 			}
 			
 			attempts = 0;

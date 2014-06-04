@@ -29,24 +29,27 @@ public final class R {
     }
     public static final class id {
         public static final int addressField=0x7f080000;
-        public static final int audio=0x7f08000d;
-        public static final int capture=0x7f080008;
+        public static final int audio=0x7f080010;
+        public static final int capture=0x7f080009;
         public static final int connectButton=0x7f080001;
-        public static final int dispense=0x7f080002;
-        public static final int divide=0x7f080004;
-        public static final int food=0x7f08000b;
-        public static final int photo=0x7f080007;
-        public static final int picture=0x7f08000a;
-        public static final int schedule=0x7f080005;
-        public static final int time=0x7f080006;
-        public static final int video=0x7f08000c;
-        public static final int viewPhoto=0x7f080009;
-        public static final int water=0x7f080003;
+        public static final int dispense=0x7f080005;
+        public static final int food=0x7f08000e;
+        public static final int panLeft=0x7f08000b;
+        public static final int panRight=0x7f08000c;
+        public static final int picture=0x7f08000d;
+        public static final int play=0x7f080004;
+        public static final int schedule=0x7f080007;
+        public static final int start=0x7f080002;
+        public static final int stop=0x7f080003;
+        public static final int time=0x7f080008;
+        public static final int video=0x7f08000f;
+        public static final int viewPhoto=0x7f08000a;
+        public static final int water=0x7f080006;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int food=0x7f030001;
-        public static final int picture=0x7f030002;
+        public static final int audio=0x7f030001;
+        public static final int food=0x7f030002;
         public static final int video=0x7f030003;
     }
     public static final class menu {

@@ -10,12 +10,13 @@
        	android:layout_width="match_parent"
        	android:layout_height="wrap_content"
        	android:text="Take photo"
-       	android:textColorHighlight="@android:color/holo_blue_dark"
+       	android:background="@android:color/holo_blue_dark"
+       	android:padding="5dp"
        	android:textSize="40sp" 
        	android:textStyle="bold"
        	android:layout_marginTop="10dp"
-       	android:layout_marginLeft="10dp"
-       	android:layout_marginRight="10dp"
+       	android:layout_marginLeft="5dp"
+       	android:layout_marginRight="5dp"
        />
     
     <Button        
@@ -23,13 +24,47 @@
        	android:layout_width="match_parent"
        	android:layout_height="wrap_content"
        	android:text="View photo"
-       	android:textColorHighlight="@android:color/holo_blue_dark"
+       	android:background="@android:color/holo_blue_dark"
+       	android:padding="5dp"
        	android:textSize="40sp" 
        	android:textStyle="bold"
-       	android:layout_marginTop="40dp"
-       	android:layout_marginLeft="10dp"
-       	android:layout_marginRight="10dp"
+       	android:layout_marginTop="15dp"
+       	android:layout_marginLeft="5dp"
+       	android:layout_marginRight="5dp"
        />
+    
+    <RelativeLayout 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"  >
+    
+	    <Button
+	        android:id="@+id/panLeft"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginTop="10dp"
+	        android:background="@android:color/holo_blue_dark"
+	        android:padding="5dp"
+	        android:text="Pan L"
+	        android:textSize="40sp"
+	        android:textStyle="bold" />
+	    
+	    <Button
+	        android:id="@+id/panRight"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginTop="10dp"
+	        android:background="@android:color/holo_blue_dark"
+	        android:padding="5dp"
+	       	android:layout_alignParentRight="true"
+	        android:text="Pan R"
+	        android:textSize="40sp"
+	        android:textStyle="bold" />
+    
+    </RelativeLayout>
     
     <ImageView
         android:id="@+id/picture"
