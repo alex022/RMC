@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import android.R.integer;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -14,13 +15,14 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class Audio extends MainActivity {
 	private static final int RECORDER_BPP = 16;
     private static final String AUDIO_RECORDER_FILE_EXT_WAV = ".wav";
     private static final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
     private static final String AUDIO_RECORDER_TEMP_FILE = "record_temp.raw";
-    private static final int RECORDER_SAMPLERATE = 44100;
+    private static final int RECORDER_SAMPLERATE = 8000;
     private static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_IN_STEREO;
     private static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
     
@@ -35,7 +37,7 @@ public class Audio extends MainActivity {
            setContentView(R.layout.audio);
            
            setButtonHandlers();
-           enableButtons(false);
+           
            
            bufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
         		   RECORDER_CHANNELS,
@@ -45,16 +47,12 @@ public class Audio extends MainActivity {
        private void setButtonHandlers() {
            ((Button)findViewById(R.id.start)).setOnClickListener(btnClick);
            ((Button)findViewById(R.id.stop)).setOnClickListener(btnClick);
+           ((Button)findViewById(R.id.play)).setOnClickListener(btnClick); 
        }
        
-       private void enableButton(int id,boolean isEnable){
-           ((Button)findViewById(id)).setEnabled(isEnable);
-       }
+ 
        
-       private void enableButtons(boolean isRecording) {
-           enableButton(R.id.start,!isRecording);
-           enableButton(R.id.stop,isRecording);
-       }
+     
        
        private String getFilename(){
     	   String filepath = Environment.getExternalStorageDirectory().getPath();
@@ -64,7 +62,7 @@ public class Audio extends MainActivity {
                    file.mkdirs();
            }
            
-           return (file.getAbsolutePath() + "/" + System.currentTimeMillis() + AUDIO_RECORDER_FILE_EXT_WAV);
+           return (file.getAbsolutePath() + "/" + "audio" + AUDIO_RECORDER_FILE_EXT_WAV);
        }
        
        private String getTempFilename(){
@@ -113,7 +111,6 @@ public class Audio extends MainActivity {
            try {
                    os = new FileOutputStream(filename);
            } catch (FileNotFoundException e) {
-                   // TODO Auto-generated catch block
                    e.printStackTrace();
            }
            
@@ -122,7 +119,6 @@ public class Audio extends MainActivity {
            if(null != os){
                    while(isRecording){
                            read = recorder.read(data, 0, bufferSize);
-                           Log.wtf("recording", "sdfsdf");
                            if(AudioRecord.ERROR_INVALID_OPERATION != read){
                                    try {
                                            os.write(data);
@@ -131,10 +127,7 @@ public class Audio extends MainActivity {
                                    }
                            }
                    }
-                   
-                   for(int i = 0; i < bufferSize; i++)
-                	   Log.wtf("audio", Byte.toString(data[i])); 
-                   
+                                      
                    try {
                            os.close();
                    } catch (IOException e) {
@@ -255,18 +248,26 @@ public class Audio extends MainActivity {
 		private View.OnClickListener btnClick = new View.OnClickListener() {
 	        @Override
 	        public void onClick(View v) {
+	        	
+	        		Thread audioThread;
 	                switch(v.getId()){
 	                        case R.id.start:{  
-	                                enableButtons(true);
-	                                startRecording();
-	                                                
-	                                break;
+	                        	Toast.makeText(currentActivity, "Playing audio \"Eat!\"", Toast.LENGTH_SHORT).show();
+	                        	audioThread = new Thread(new writeThread("*AUDIO1*", null, 0, null, null));
+	                        	audioThread.start();
+	                            break;
 	                        }
-	                        case R.id.stop:{	                                
-	                                enableButtons(false);
-	                                stopRecording();
-	                                
-	                                break;
+	                        case R.id.stop:{	      
+	                        	Toast.makeText(currentActivity, "Playing audio \"Come!\"", Toast.LENGTH_SHORT).show();
+	                        	audioThread = new Thread(new writeThread("*AUDIO2*", null, 0, null, null));
+	                        	audioThread.start();
+	                            break;
+	                        }
+	                        case R.id.play:{
+	                        	Toast.makeText(currentActivity, "Playing audio \"Guard!\"", Toast.LENGTH_SHORT).show(); 
+	                        	audioThread = new Thread(new writeThread("*AUDIO3*", null, 0, null, null));
+	                        	audioThread.start();
+	                        	break;
 	                        }
 	                }
 	        }

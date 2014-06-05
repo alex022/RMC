@@ -285,8 +285,11 @@ public class MainActivity extends Activity {
 			
 			while(attempts < ATTEMPTS)
 			{					
-				try{		
-					outStream.print(message);						
+				try{	
+					if(message.equals("*SCHEDULE*"))
+						outStream.print(message);	
+					else
+						outStream.println(message);	
 					Log.wtf("write", "Sent message");
 					break;
 				} catch(Exception e)
@@ -305,33 +308,42 @@ public class MainActivity extends Activity {
 				} 			
 			else if(message.equals("*PANLEFT*") || message.equals("*PANRIGHT*"))
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(750);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				} 
+			else if(message.equals("*AUDIO1*") || message.equals("*AUDIO2") || message.equals("*AUDIO3*"))
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			
-			attempts = 0;
-			
-			if(message.equals("*AUDIO*"))
-			while(attempts < ATTEMPTS)
-			{			
-				try{			
-					Log.wtf("Size", Long.toString(size)); 
-					for(int i = 0; i < size; i++)
-					{						
-						outStream.println(Byte.toString(output[i]));	
-						if((i % 1000) == 0)
-							Log.wtf("Sent", Integer.toString(i) + "bytes");
-					}			
-			        Log.wtf("write", "Sent file");
-			        break;
-				} catch(Exception e)
-				  {
-					Log.wtf("write", "Failed to send file");
-				  }		
-				
-				attempts++;
-			}
+			attempts = 0;			
+//			if(message.equals("*AUDIO*"))
+//			while(attempts < ATTEMPTS)
+//			{					
+//				try{					
+////					for(int i = 0; i < size; i++)
+////					{
+////						outStream.println(output[i]);
+////						Log.wtf("byte", Integer.toHexString((int)output[i]));
+////					}
+//					Log.wtf("Size", Long.toString(size));	
+//					
+//					String dataString = output.toString(); 
+//					outStream.println(dataString); 
+//					
+//						
+//			        Log.wtf("write", "Sent file");
+//			        break;
+//				} catch(Exception e)
+//				  {
+//					Log.wtf("write", "Failed to send file");
+//				  }		
+//				
+//				attempts++;
+//			}
 			
 			if(message.equals("*SCHEDULE*"))
 			{
